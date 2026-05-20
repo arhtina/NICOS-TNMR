@@ -34,7 +34,7 @@ devices = {
         device('nicos_sinq.frappy_sinq.devices.FrappyNode',
                description='TNMR PC SEC node', unit='', async_only=True,
                prefix='nmr_', auto_create=True, service='main',
-               uri='tcp://129.129.156.124:5000',
+               uri='tcp://nmr-201510:5000',
         ),
     'hdf5filesink': 
         device('nicos_sinq.tnmr.sinks.HDF5_NEXUS.HDF5ScanfileSink',
