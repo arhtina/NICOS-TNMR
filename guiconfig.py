@@ -1,80 +1,110 @@
+# *****************************************************************************
+# NICOS, the Networked Instrument Control System of the MLZ
+# Copyright (c) 2009-2025 by the NICOS contributors (see AUTHORS)
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# Module authors:
+#   Michele Brambilla <michele.brambilla@psi.ch>
+#
+# *****************************************************************************
+
 """NICOS GUI default configuration."""
 
 main_window = docked(
     tabbed(
-        ('Command line',
-         vsplit(
-            panel('nicos.clients.gui.panels.console.ConsolePanel', hasinput=True),
-            panel('nicos.clients.gui.panels.status.ScriptStatusPanel', eta=True),
+        ('Instrument interaction',
+         hsplit(
+             vbox(
+                 panel(
+                     'nicos.clients.flowui.panels.cmdbuilder.CommandPanel',
+                      modules=['nicos.clients.gui.cmdlets'],
+                    ),
+                 tabbed(
+                     ('Output',
+                      panel('nicos.clients.flowui.panels.console.ConsolePanel',
+                            hasinput=False)),
+                     ('Scan Plot',
+                      panel('nicos.clients.flowui.panels.scans.ScansPanel')),
+                     ('Detector Image',
+                      panel('nicos_sinq.gui.panels.live.LiveDataPanel')),
+                     ('Script Status',
+                      panel('nicos.clients.flowui.panels.status.ScriptStatusPanel',
+                            eta=True)),
+                     ('Gaspump',
+                      panel(
+                          'nicos_sinq.dmc.gui.panels.gaspump.DmcGaspumpPanel',
+                          setups='gaspump',
+                      )),
+
+                 ),
+
+             ), # vsplit
+             panel(
+                 'nicos.clients.flowui.panels.devices.DevicesPanel',
+                 dockpos='right',
+             ),
+         ),  # hsplit
+         ),
+        (
+            'Batch file generation',
+            vsplit(
+                panel('nicos.clients.gui.panels.scriptbuilder.CommandsPanel'),
+                panel('nicos.clients.flowui.panels.editor.EditorPanel',
+                      tools=None),
+            ), # vsplit
+        ),
+        ('Detector Image',
+         panel('nicos_sinq.gui.panels.live.LiveDataPanel')),
+        (
+            'History',
+            panel('nicos.clients.flowui.panels.history.HistoryPanel'),
+        ),
+        ('Logs',
+            tabbed(
+                ('Errors', panel('nicos.clients.gui.panels.errors.ErrorPanel')),
+                ('Log files', panel(
+                    'nicos.clients.gui.panels.logviewer.LogViewerPanel')),
+            ),
+         ),
+
+
+        ('  ', panel('nicos.clients.flowui.panels.empty.EmptyPanel')),
+        ('Setup',
+         tabbed(
+             ('Experiment',
+              panel('nicos_sinq.gui.panels.setup_panel.ExpPanel')),
+             ('Instrument',
+              panel('nicos.clients.flowui.panels.setup_panel.SetupsPanel')),
          ),
         ),
-        ('Script Builder',
-         vsplit(
-             panel('nicos.clients.gui.panels.scriptbuilder.CommandsPanel'),
-             panel('nicos.clients.gui.panels.editor.EditorPanel',
-                   tools=[
-                       tool('Scan Generator',
-                            'nicos.clients.gui.tools.scan.ScanTool')
-                   ]),
-         )),
-        ('Experiment Information and Setup',
-         panel('nicos.clients.gui.panels.expinfo.ExpInfoPanel',
-               # to configure panels to show on New/FinishExperiment
-               # new_exp_panel=panel('nicos_demo.demo.some.panel'),
-               # finish_exp_panel=panel('nicos_demo.demo.some.panel'),
-              )
-        ),
-    ),
+        ('Finish Experiment',
+         panel('nicos.clients.flowui.panels.setup_panel.FinishPanel')),
 
-    ('NICOS devices',
-     panel('nicos.clients.gui.panels.devices.DevicesPanel',
-           dockpos='right',
-           param_display={'Exp': ['lastpoint', 'lastscan']},
-           filters=[('Detector', 'det'),
-                    ('Temperatures', '^T'),
-                   ],
-          )
-    ),
-)
+        position='left',
+    ), # tabbed
 
-windows = [
-    window('Setup', 'setup',
-        tabbed(
-            ('Experiment',
-             panel('nicos.clients.gui.panels.setup_panel.ExpPanel')),
-            ('Setups',
-             panel('nicos.clients.gui.panels.setup_panel.SetupsPanel')),
-            ('Detectors/Environment',
-             panel('nicos.clients.gui.panels.setup_panel.DetEnvPanel')),
-        ),
-    ),
-    window('Editor', 'editor',
-        vsplit(
-            panel('nicos.clients.gui.panels.scriptbuilder.CommandsPanel'),
-            panel('nicos.clients.gui.panels.editor.EditorPanel',
-              tools = [
-                  tool('Scan Generator',
-                       'nicos.clients.gui.tools.scan.ScanTool')
-              ]))),
-    window('Scans', 'plotter',
-           panel('nicos.clients.gui.panels.scans.ScansPanel')),
-    window('History', 'find',
-           panel('nicos.clients.gui.panels.history.HistoryPanel')),
-    window('Logbook', 'table',
-           panel('nicos.clients.gui.panels.elog.ELogPanel')),
-    window('Log files', 'table',
-           panel('nicos.clients.gui.panels.logviewer.LogViewerPanel')),
-    window('Errors', 'errors',
-           panel('nicos.clients.gui.panels.errors.ErrorPanel')),
-    window('Live data', 'live',
-           panel('nicos.clients.gui.panels.live.LiveDataPanel')),
-]
+    ) #docked
+
+windows = [ ]
 
 tools = [
-    tool('Calculator', 'nicos.clients.gui.tools.calculator.CalculatorTool'),
     tool('Report NICOS bug or request enhancement',
          'nicos.clients.gui.tools.bugreport.BugreportTool'),
-    tool('Emergency stop button',
-         'nicos.clients.gui.tools.estop.EmergencyStopTool',
-         runatstartup=False),
 ]
+
+options = {
+    'mainwindow_class': 'nicos_sinq.gui.mainwindow.MainWindow',
+}
