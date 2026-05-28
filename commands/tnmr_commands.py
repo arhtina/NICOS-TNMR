@@ -35,6 +35,7 @@ from nicos.utils import createThread
 
 TNMR_CURRENTLY_SCANNING = None
 
+@usercommand
 class tnmr_scan:
     '''Always acts as a context manager for the data manager. Only the top level tnmr_scan object actually controls the opening and closing of files. '''
     def __init__(self):
