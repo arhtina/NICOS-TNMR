@@ -38,6 +38,6 @@ devices = {
         ),
     'hdf5filesink': 
         device('nicos_sinq.tnmr.sinks.HDF5_NEXUS.HDF5ScanfileSink',
-            filenametemplate=['file_%(proposal)s_%(month)02d-%(day)02d-%(hour)02d-%(minute)02d-%(second)02d.hdf'],
+            filenametemplate=['%(nmr_daq_scout.title)s_%(tt)02dK_%(Sample)s_%(nmr_daq_scout.nucleus)s_%(month)02d-%(day)02d-%(hour)02d-%(minute)02d-%(second)02d.hdf'],
         ),
 }
